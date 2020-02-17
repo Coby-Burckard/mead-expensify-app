@@ -30,13 +30,13 @@ class ExpenseListFilters extends React.Component {
           type="text"
           value={this.props.filters.text}
           onChange={e => {
-            props.dispatch(setTextFilter(e.target.value));
+            this.props.dispatch(setTextFilter(e.target.value));
           }}
         />
         <select
           value={this.props.filters.sortBy}
           onChange={e => {
-            props.dispatch(
+            this.props.dispatch(
               e.target.value === "date" ? sortByDate() : sortByAmount()
             );
           }}
