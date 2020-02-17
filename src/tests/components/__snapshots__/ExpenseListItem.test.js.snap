@@ -10,9 +10,9 @@ exports[`should render an ExpenseListItem component with the first expense data 
     </h3>
   </Link>
   <p>
-    195
-     - 
-    <Component />
+    $1.95
+    -
+    12/31/1969
   </p>
 </div>
 `;
