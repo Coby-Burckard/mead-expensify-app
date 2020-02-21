@@ -1,4 +1,10 @@
-import { addExpense, removeExpense, editExpense } from "../../actions/expenses";
+import { addExpense, removeExpense, editExpense, startAddExpense } from "../../actions/expenses";
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import expenses from '../fixtures/expenses'
+import database from '../../firebase/firebase'
+
+const createMockStore = configureMockStore([thunk])
 
 test("should set up remove expense option object", () => {
   const action = removeExpense({ id: "1" });
@@ -24,35 +30,52 @@ test("should create an edit expense action object", () => {
 });
 
 test("should set up add expense action object with provided values", () => {
+  const action = addExpense(expenses[2]);
+
+  expect(action).toEqual({
+    type: "ADD_EXPENSE",
+    expense: expenses[2]
+  });
+});
+
+test('should add expense to database and store', () => {
+  const store = createMockStore({})
   const expenseData = {
-    description: "Rent",
-    amount: 1234,
-    createdAt: 1000,
-    note: "this was last months rent"
-  };
+    description: 'mouse',
+    amount: '3000',
+    note: 'this one is better',
+    createdAt: 1000
+  }
+  
+  startAddExpense(expenseData)().then(() => {
+    const actions = store.getActions()
+    expect(actions[0]).toEqual({
+      type: 'ADD_EXPENSE',
+      expense: {
+        id: expect.any(String),
+        ...expenseData
+      }
+    })
 
-  const action = addExpense(expenseData);
+    database.ref(`expenses/${actions.expense.id}`).once('value').then(snapshot => {
+      expect(snapshot.val()).toEqual(expenseData)
+      done()
+    })
+    done()
+  })
+})
 
-  expect(action).toEqual({
-    type: "ADD_EXPENSE",
-    expense: {
-      ...expenseData,
-      id: expect.any(String)
-    }
-  });
-});
+// test("should set up add expense action object with default values", () => {
+//   const action = addExpense();
 
-test("should set up add expense action object with default values", () => {
-  const action = addExpense();
-
-  expect(action).toEqual({
-    type: "ADD_EXPENSE",
-    expense: {
-      id: expect.any(String),
-      description: "",
-      note: "",
-      createdAt: 0,
-      amount: 0
-    }
-  });
-});
+//   expect(action).toEqual({
+//     type: "ADD_EXPENSE",
+//     expense: {
+//       id: expect.any(String),
+//       description: "",
+//       note: "",
+//       createdAt: 0,
+//       amount: 0
+//     }
+//   });
+// });
