@@ -64,18 +64,3 @@ test('should add expense to database and store', () => {
     done()
   })
 })
-
-// test("should set up add expense action object with default values", () => {
-//   const action = addExpense();
-
-//   expect(action).toEqual({
-//     type: "ADD_EXPENSE",
-//     expense: {
-//       id: expect.any(String),
-//       description: "",
-//       note: "",
-//       createdAt: 0,
-//       amount: 0
-//     }
-//   });
-// });
