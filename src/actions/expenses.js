@@ -33,10 +33,23 @@ const startAddExpense = (expenseData = {}) => {
 }
 
 // REMOVE_EXPENSE
-const removeExpense = ({ id } = {}) => ({
-  type: "REMOVE_EXPENSE",
-  id
-});
+const removeExpense = ({ id } = {}) => {
+  const action = {
+    type: "REMOVE_EXPENSE",
+    id
+  }
+  return action
+};
+
+const startRemoveExpense = ( { id } = {}) => {
+  return (dispatch) => { 
+    database.ref(`expenses/${id}`).remove().then(() => {
+      dispatch(removeExpense({id}))
+    }).catch((error) => {
+      console.log('Error deleting expense: ', error)
+    })
+  }
+}
 
 // EDIT_EXPENSE
 const editExpense = (id, updates) => ({
@@ -44,6 +57,28 @@ const editExpense = (id, updates) => ({
   id,
   updates
 });
+
+const startEditExpense = (id, expenseData) => {
+  const {
+    description = "",
+    note = "",
+    amount = 0,
+    createdAt = 0
+  } = expenseData
+
+  const updates = {description, note, amount, createdAt}
+
+  return (dispatch) => {
+    database.ref(`expenses/${id}`)
+      .set(updates)
+      .then(() => {
+        dispatch(editExpense(id, updates))
+      })
+      .catch((error) => {
+        console.log('Error updating db: ', error)
+      })
+  }
+}
 
 // SET_EXPENSES
 const setExpenses = (expenses) => ({
@@ -59,7 +94,6 @@ const startSetExpenses = () => {
       .then((snapshot) => {
         const expenses = []
         snapshot.forEach(expense => {
-          console.log(expense.key, expense.val())
           expenses.push({
             id: expense.key,
             ...expense.val()
@@ -71,4 +105,4 @@ const startSetExpenses = () => {
   }
 }
 
-export { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses };
+export { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses, startRemoveExpense, startEditExpense };
