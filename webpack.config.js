@@ -12,8 +12,6 @@ if (process.env.NODE_ENV === 'test') {
   require('dotenv').config({ path: '.env.development'})
 }
 
-console.log(process.env)
-
 module.exports = (env, argv) => {
 
   const isProduction = env === 'production'

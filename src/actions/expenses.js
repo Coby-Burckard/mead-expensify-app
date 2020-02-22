@@ -7,7 +7,7 @@ const addExpense = (expense) => ({
   expense
 });
 
-export const startAddExpense = (expenseData = {}) => {
+const startAddExpense = (expenseData = {}) => {
   return (dispatch) => {
     const {
       description = "",
@@ -45,4 +45,30 @@ const editExpense = (id, updates) => ({
   updates
 });
 
-export { addExpense, removeExpense, editExpense };
+// SET_EXPENSES
+const setExpenses = (expenses) => ({
+  type: 'SET_EXPENSES',
+  expenses
+});
+
+// START_SET_EXPENSES
+const startSetExpenses = () => {
+  return (dispatch) => {
+    return database.ref('expenses')
+      .once('value')
+      .then((snapshot) => {
+        const expenses = []
+        snapshot.forEach(expense => {
+          console.log(expense.key, expense.val())
+          expenses.push({
+            id: expense.key,
+            ...expense.val()
+          })
+        })
+        dispatch(setExpenses(expenses))
+      })
+      .catch('failed initial read from DB')
+  }
+}
+
+export { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses };
