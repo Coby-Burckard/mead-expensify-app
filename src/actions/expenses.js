@@ -73,7 +73,7 @@ const startEditExpense = (id, expenseData) => {
 
   return (dispatch, getState) => {
     const uid = getState().auth.uid
-    return database.ref(`expenses/${id}`)
+    return database.ref(`users/${uid}/expenses/${id}`)
       .set(updates)
       .then(() => {
         dispatch(editExpense(id, updates))

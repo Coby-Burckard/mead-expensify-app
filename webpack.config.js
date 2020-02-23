@@ -2,7 +2,6 @@ const path = require("path");
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const webpack = require('webpack')
 
-
 // process.env.NODE_ENV - sets the environment (test, development, production)
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
@@ -18,7 +17,7 @@ module.exports = (env, argv) => {
   const CSSExtract = new ExtractTextPlugin('styles.css')
 
   return {
-    entry: "./src/app.js",
+    entry: ["@babel/polyfill", "./src/app.js"],
     output: {
       path: path.join(__dirname, "public", 'dist'),
       filename: "bundle.js"
